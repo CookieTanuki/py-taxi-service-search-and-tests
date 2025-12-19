@@ -36,6 +36,20 @@ class ManufacturerListView(LoginRequiredMixin, generic.ListView):
     template_name = "taxi/manufacturer_list.html"
     paginate_by = 5
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get("q")
+
+        if q:
+            queryset = queryset.filter(name__icontains=q)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_q"] = self.request.GET.get("q", "")
+        return context
+
 
 class ManufacturerCreateView(LoginRequiredMixin, generic.CreateView):
     model = Manufacturer
@@ -58,6 +72,20 @@ class CarListView(LoginRequiredMixin, generic.ListView):
     model = Car
     paginate_by = 5
     queryset = Car.objects.select_related("manufacturer")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get("q")
+
+        if q:
+            queryset = queryset.filter(model__icontains=q)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_q"] = self.request.GET.get("q", "")
+        return context
 
 
 class CarDetailView(LoginRequiredMixin, generic.DetailView):
@@ -84,6 +112,20 @@ class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
 class DriverListView(LoginRequiredMixin, generic.ListView):
     model = Driver
     paginate_by = 5
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        q = self.request.GET.get("q")
+
+        if q:
+            queryset = queryset.filter(username__icontains=q)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_q"] = self.request.GET.get("q", "")
+        return context
 
 
 class DriverDetailView(LoginRequiredMixin, generic.DetailView):
